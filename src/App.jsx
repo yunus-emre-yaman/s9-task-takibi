@@ -2,9 +2,10 @@ import { useState } from "react";
 import "./app.css";
 import Task from "./components/Task";
 import TaskHookForm from "./components/TaskHookForm";
-import TaskForm from "./components/TaskForm";
 import PeopleForm from "./components/PeopleForm";
 import { initialTasks, initialTeam } from "./tasks";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [tasks, setTasks] = useState(initialTasks);
@@ -12,14 +13,21 @@ function App() {
 
   function handleTaskSubmit(yeniTask) {
     setTasks([yeniTask, ...tasks]);
+    toast.success("Yeni görev oluşturuldu.");
   }
 
   function handlePeopleSubmit(yeniKisi) {
     setTeam([...team, yeniKisi]);
+    toast.success("Yeni kişi oluşturuldu.");
   }
 
   function handleComplete(id) {
-    console.log("tamamlama fonksiyonunu buraya yazın");
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id ? { ...task, status: "yapıldı" } : task
+      )
+    );
+    toast.info(`${id} id'li görev tamamlandı.`);
   }
 
   return (
@@ -27,7 +35,6 @@ function App() {
       <div className="formColumn">
         <div className="form-container">
           <h2>Yeni Task</h2>
-          {/* <TaskForm kisiler={team} submitFn={handleTaskSubmit} /> */}
           <TaskHookForm kisiler={team} submitFn={handleTaskSubmit} />
         </div>
 
@@ -58,6 +65,7 @@ function App() {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }
